@@ -1,0 +1,24 @@
+{
+  "name": "miiaweb",
+  "version": "1.0.0",
+  "description": "A system made by MIIA Engineers.",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon server.js"
+  },
+  "keywords": [
+    "miia"
+  ],
+  "author": "miia group 7",
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "^1.19.2",
+    "express": "^4.17.3",
+    "mysql": "^2.18.1",
+    "pdf-poppler": "^0.2.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.15"
+  }
+}
