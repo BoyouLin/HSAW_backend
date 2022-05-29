@@ -2,10 +2,12 @@ module.exports = (app) => {
   const scoreController = require("../controllers/scoreController.js");
   const employeeController = require("../controllers/employeeController.js");
   const announcementController = require("../controllers/announcementController.js");
+  const statisticsController = require("../controllers/statisticsController.js");
+
   app.use(function (req, res, next) {
     // Website you wish to allow to connect
     res.setHeader("Access-Control-Allow-Origin", "*");
-    //res.setHeader('Access-Control-Allow-Origin', 'https://chu289.github.io');
+    //res.setHeader('Access-Control-Allow-Origin', 'https://chu289.github.io','https://boyoulin.github.io');
 
     // Request methods you wish to allow
     res.setHeader(
@@ -26,68 +28,26 @@ module.exports = (app) => {
     // Pass to next layer of middleware
     next();
   });
+
   // 取得test資料
   app.get("/test/", scoreController.tsetFunction);
-
-  //傳入{"employee_ID":"admin", "score":5, "Comment":"", "place_ID":"A001"}
-  //回傳什麼???
+  //評分紀錄
   app.post("/score/", scoreController.insertScore);
-  //  傳入{"ID":"admin", "password":"0000"}
-  //  回傳
-  //   {
-  //     "loginFlag": true,
-  //     "employee_ID": "admin",
-  //     "qrcode": "http://localhost:8080/static/employees_qrcode/admin.png",
-  //     "announcements": [
-  //         "http://localhost:8080/static/announcement_png/A0000001-1.png",
-  //         "http://localhost:8080/static/announcement_png/A0000002-1.png",
-  //         "http://localhost:8080/static/announcement_png/B0000001-1.png"]
-  //    }
+  //登入回傳
   app.post("/login/", employeeController.login);
-  app.post("/logout/", employeeController.logout);
+  //取得公告
   app.get("/announcements/", announcementController.getAnnouncement);
+  //測試公告回傳
   app.get("/announcementstest/", announcementController.getAnnouncementtest);
-
-  /*
-    // 創立醫院資料
-    app.post('/testRoute', hospitalController.create);
-
-    // 取得所有醫院資料
-    app.get('/hospital', hospitalController.findAll);
-
-    //取得查詢的醫院資料
-    //?distance=20&lon=121.431877&lat=25.037998&city=新北市&min_score=60&max_score=70
-    //distance幾公里內,lon經度,lat緯度,city縣市,min_score最低分,max_score最高分
-    //沒有要查詢的參數，值可留空或不寫即可
-    app.get('/hospital/query/', hospitalController.query);
-
-    app.get('/hospital/c3_data',hospitalController.c3Data);
-
-    //建立一則留言資料
-    app.post('/Review/', reviewController.create);//已改版去掉"create"這個字
-
-    //取得所有留言的資料
-    app.get('/allReviews/', reviewController.findAll);
-
-    //取得10大排名醫院的特定資料
-    app.get('/hospital/top10Hospital', hospitalController.top10Hospital);
-
-    //取得某縣市的醫院資料
-    //app.get('/hospital/city/:city', controller.findHospitalWithCity);
-
-    //以query傳入參數
-    app.get('/test/', hospitalController.tsetFunction);
-    
-    //驗證網頁密碼
-    app.post('/protect/', hospitalController.protect);
-    // Retrieve a single Note with noteId
-    //app.get('/testRoute/:noteId', controller.findOne);
-
-    // Update a Note with noteId
-    //app.put('/testRoute/:noteId', controller.update);
-
-    // Delete a Note with noteId
-    //app.delete('/testRoute/:noteId', controller.delete);
-
-    //app.get('/testRoute/findHospital', controller.findHospital);*/
+  //部門分支統計
+  app.post(
+    "/sub_department_analyze/",
+    statisticsController.subDepartmentAnalyze
+  );
+  //部門統計
+  app.post("/department_analyze/", statisticsController.departmentAnalyze);
+  //全院統計
+  app.post("/all_analyze/", statisticsController.allAnalyze);
+  //取得時段地點內的員工資料
+  app.post("/get_employee_options/", statisticsController.getEmployeeOptions);
 };

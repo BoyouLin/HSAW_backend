@@ -1,22 +1,18 @@
 const serverPool = require("../../server.js").pool;
 const sql = require("../sql/sql.js").employeesSQL;
-//const fs = require("fs");
-//const pdf = require("pdf-poppler");
+const crypto = require("crypto");
+const userData = require("../../config/userData.js"); //include local test secret
 
 exports.login = (req, res) => {
   let finialResults = {
     loginFlag: 0,
     employee_ID: "",
-    //qrcode: "",
-    //announcements: [],
   };
-  //let host = "https://hospitalstaffassessmentserver.azurewebsites.net:443/";
-  //let qrcodeDir = host + "static/employees_qrcode/";
-  //let announcementDirPDF = ".\\file\\announcement_pdf\\";
-  //let announcementDirPNG = ".\\file\\announcement_png\\";
-  //let announcementAddress = host + "static/announcement_png/";
-  let data = [req.body.ID, req.body.ID, req.body.password];
 
+  const salt = process.env.salt || userData.salt;
+  let tempPassword = req.body.password + salt;
+  let hash = crypto.createHash("sha256").update(tempPassword).digest("hex");
+  let data = [req.body.ID, req.body.ID, hash];
   serverPool.getConnection(function (err, connection) {
     if (err) console.log(err);
 
@@ -29,7 +25,10 @@ exports.login = (req, res) => {
           res.send(finialResults);
           connection.release();
         } else {
-          if (results[0]["if_work"] == 0) {
+          if (results[0]["employee_ID"] == "king") {
+            console.log("後臺登入");
+            finialResults.loginFlag = 3;
+          } else if (results[0]["if_work"] == 0) {
             console.log("你今天不用上班");
             finialResults.loginFlag = 2;
           } else {
@@ -39,10 +38,7 @@ exports.login = (req, res) => {
           leaveLoginlog();
           console.log(results[0]["employee_ID"] + " is login成功.");
           finialResults.employee_ID = results[0]["employee_ID"];
-          //finialResults.qrcode = qrcodeDir + results[0]["QRcode_location"];
-          //announcementProcess();
           res.send(finialResults);
-          //console.log(2);
         }
       });
     }
@@ -67,68 +63,40 @@ exports.login = (req, res) => {
       }
     }
 
-    /*function announcementProcess() {
-      console.log(1);
-      connection.query(
-        sql.announcementProcess,
-        async function (err, results, fields) {
-          leaveLoginlog();
-          if (err) {
-            console.log(err);
-          } else if (results.length == 0) {
-            console.log("目前沒有公告");
-          } else {
-            console.log(3);
-            await pngCheck(results);
-          }
-          console.log("Response finialResults.");
-          res.send(finialResults);
-        }
-      );
-    }
-
-    async function pngCheck(results) {
-      let opts = {
-        format: "png",
-        out_dir: announcementDirPNG, //資料夾
-        out_prefix: "", //文件名
-        page: 1, //-1
-      };
-      try {
-        for (let i = 0; i < results.length; i++) {
-          let file = announcementDirPDF + results[i]["file_location"];
-          let fileName = results[i]["file_location"].slice(0, -4); //去除副檔名
-          finialResults.announcements.push(
-            announcementAddress + fileName + "-1.png"
-          );
-          if (!fs.existsSync(announcementDirPNG + fileName + "-1.png")) {
-            opts.out_prefix = fileName;
-            await pdf.convert(file, opts);
-            console.log("Successfully converted " + file);
-          }
-        }
-      } catch (error) {
-        console.error(error);
-      }
-    }*/
-
     loginCheck();
   });
 };
 
-exports.logout = (req, res) => {
-  serverPool.query(
-    sql.writeLogoutLog,
-    [req.body.ID],
-    function (err, results, fields) {
-      if (err) {
-        console.log(err);
-        res.send("NO");
-      } else {
-        console.log("insert logout log.");
-        console.log(req.body.ID + " logout.");
-        res.send("OK");
-      }
+//use after insert new employees
+exports.SHA256PWFunction = (req, res) => {
+  let data = [];
+  let pw = [];
+  function sqlInsert(dataID, hash) {
+    return new Promise((resolve, reject) => {
+      serverPool.query(
+        sql.craeteSHA1,
+        [hash, dataID],
+        function (err, results, fields) {
+          if (err) {
+            console.log(err);
+          } else {
+            console.log(results);
+            console.log(hash);
+            resolve();
+          }
+        }
+      );
+    });
+  }
+  async function genarateSHA256() {
+    for (let i = 0; i < data.length; i++) {
+      let salt = "salt";
+      let temp = pw[i] + salt;
+      let hash = crypto.createHash("sha256").update(temp).digest("hex");
+      await sqlInsert(data[i], hash);
     }
-  );
+  }
+  genarateSHA256();
+
+  res.send("Replcing password");
 };

@@ -28,9 +28,7 @@ exports.getAnnouncement = (req, res) => {
               console.log("目前沒有公告");
               resolve();
             } else {
-              console.log(1);
               await pngCheck(results);
-              console.log(3);
               resolve();
             }
           }
@@ -71,7 +69,6 @@ exports.getAnnouncement = (req, res) => {
       } catch (error) {
         console.error(error);
       }
-      console.log(2);
     }
 
     function getNextCallTime() {
@@ -91,7 +88,6 @@ exports.getAnnouncement = (req, res) => {
             } else {
               finialResults.nextCallSeconds =
                 (results[0]["next_call_minutes"] + 1) * 60;
-              console.log(8);
               resolve();
             }
           }
@@ -101,9 +97,7 @@ exports.getAnnouncement = (req, res) => {
 
     async function announcementRES() {
       await getAnnouncements();
-      console.log(7);
       await getNextCallTime();
-      console.log(9);
       connection.release();
       console.log("Response finialResults.");
       res.send(finialResults);
