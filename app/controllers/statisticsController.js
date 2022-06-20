@@ -25,7 +25,7 @@ exports.subDepartmentAnalyze = (req, res) => {
     req.body.department_ID,
     req.body.place_sub_number,
   ];
-  console.log(data);
+  //console.log(data);
   serverPool.getConnection(function (err, connection) {
     if (err) console.log(err);
     connection.query(
@@ -51,9 +51,9 @@ exports.subDepartmentAnalyze = (req, res) => {
             }
           });
 
-          for (i = 0; i < results.length; i++) {
+          /*for (i = 0; i < results.length; i++) {
             console.log("Row: " + JSON.stringify(results[i]));
-          }
+          }*/
           console.log("Sub Department Analyze Finsihed.");
           res.send(finialResults);
           connection.release();
@@ -78,7 +78,7 @@ exports.departmentAnalyze = (req, res) => {
     dateToTime(req.body.end_date, 0),
     req.body.department_ID,
   ];
-  console.log(data);
+  //console.log(data);
   serverPool.getConnection(function (err, connection) {
     if (err) console.log(err);
     connection.query(
@@ -105,9 +105,9 @@ exports.departmentAnalyze = (req, res) => {
             }
           });
 
-          for (i = 0; i < results.length; i++) {
+          /*for (i = 0; i < results.length; i++) {
             console.log("Row: " + JSON.stringify(results[i]));
-          }
+          }*/
           console.log("Department Analyze Finsihed.");
           res.send(finialResults);
           connection.release();
@@ -131,7 +131,7 @@ exports.allAnalyze = (req, res) => {
     dateToTime(req.body.start_date, 1),
     dateToTime(req.body.end_date, 0),
   ];
-  console.log(data);
+  //console.log(data);
   serverPool.getConnection(function (err, connection) {
     if (err) console.log(err);
     connection.query(sql.allAnalyze, data, function (err, results, fields) {
@@ -154,10 +154,9 @@ exports.allAnalyze = (req, res) => {
           }
         });
 
-        for (i = 0; i < results.length; i++) {
+        /*for (i = 0; i < results.length; i++) {
           console.log("Row: " + JSON.stringify(results[i]));
-        }
-        console.log(finialResults);
+        }*/
         console.log("All Analyze Finsihed.");
         res.send(finialResults);
         connection.release();
@@ -188,7 +187,6 @@ exports.getEmployeeOptions = (req, res) => {
           results.forEach((item) => {
             finialResults[item["employee_ID"]] = item["employee_name"];
           });
-          console.log(results);
           console.log("res empoyee options Finsihed.");
           res.send(finialResults);
           connection.release();

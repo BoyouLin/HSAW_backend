@@ -1,6 +1,5 @@
 const serverPool = require("../../server.js").pool;
 const sql = require("../sql/sql.js").scoreSQL;
-const crypto = require("crypto");
 
 exports.tsetFunction = (req, res) => {
   res.send("Test res.");

@@ -50,7 +50,7 @@ exports.getAnnouncement = (req, res) => {
           let fileName = results[i]["file_location"].slice(0, -4); //去除副檔名的檔名
           await pdf.info(file).then((pdfinfo) => {
             //取得頁數推入回傳陣列
-            console.log(pdfinfo);
+            //console.log(pdfinfo);
             let pageNumber = Number(pdfinfo.pages);
             for (let j = 1; j <= pageNumber; j++) {
               finialResults.announcements.push(
