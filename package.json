@@ -1,5 +1,5 @@
 {
-  "name": "miiaweb",
+  "name": "hospital_staff_assessment_system",
   "version": "1.0.0",
   "description": "A system made by MIIA Engineers.",
   "main": "server.js",
@@ -10,7 +10,7 @@
   "keywords": [
     "miia"
   ],
-  "author": "miia group 7",
+  "author": "MIIA group 7",
   "license": "MIT",
   "dependencies": {
     "body-parser": "^1.19.2",
